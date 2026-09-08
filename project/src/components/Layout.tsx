@@ -5,6 +5,7 @@ import {
   Package,
   Users,
   Receipt,
+  UserRound,
   LogOut,
   Menu,
   X,
@@ -18,6 +19,7 @@ type LayoutProps = {
   current: Page;
   onNavigate: (page: Page) => void;
   children: ReactNode;
+  onCustomerView: () => void;
 };
 
 const navItems: { id: Page; label: string; icon: typeof LayoutDashboard }[] = [
@@ -28,7 +30,7 @@ const navItems: { id: Page; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'sales', label: 'Sales History', icon: Receipt },
 ];
 
-export function Layout({ current, onNavigate, children }: LayoutProps) {
+export function Layout({ current, onNavigate, children, onCustomerView }: LayoutProps) {
   const { user, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -77,6 +79,13 @@ export function Layout({ current, onNavigate, children }: LayoutProps) {
         </nav>
 
         <div className="px-3 py-4 border-t border-slate-800">
+          <button
+            onClick={onCustomerView}
+            className="w-full flex items-center gap-3 px-3 py-2.5 mb-3 rounded-lg text-sm font-medium text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors"
+          >
+            <UserRound className="w-5 h-5" />
+            Customer View
+          </button>
           <div className="flex items-center gap-3 px-3 py-2 mb-2">
             <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-emerald-400">
               {user?.email?.[0]?.toUpperCase() ?? '?'}

@@ -7,10 +7,18 @@ import { POSPage } from './pages/POSPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { CustomersPage } from './pages/CustomersPage';
 import { SalesPage } from './pages/SalesPage';
+import { CustomerStorePage } from './pages/CustomerStorePage';
 
 function AppContent() {
-  const { session, loading } = useAuth();
+  const { session, user, loading } = useAuth();
+  const requestedView = new URLSearchParams(window.location.search).get('view');
   const [page, setPage] = useState<Page>('dashboard');
+  const [view, setView] = useState<'admin' | 'customer'>(requestedView === 'customer' ? 'customer' : 'admin');
+
+  const changeView = (nextView: 'admin' | 'customer') => {
+    setView(nextView);
+    window.history.replaceState({}, '', nextView === 'customer' ? '?view=customer' : '?view=admin');
+  };
 
   if (loading) {
     return (
@@ -24,8 +32,17 @@ function AppContent() {
     return <LoginPage />;
   }
 
+  const accountRole = user?.user_metadata?.role;
+  if (accountRole === 'customer') {
+    return <CustomerStorePage />;
+  }
+
+  if (view === 'customer') {
+    return <CustomerStorePage onAdminView={() => changeView('admin')} />;
+  }
+
   return (
-    <Layout current={page} onNavigate={setPage}>
+    <Layout current={page} onNavigate={setPage} onCustomerView={() => changeView('customer')}>
       {page === 'dashboard' && <DashboardPage />}
       {page === 'pos' && <POSPage />}
       {page === 'products' && <ProductsPage />}

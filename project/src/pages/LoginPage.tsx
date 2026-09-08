@@ -7,6 +7,7 @@ export function LoginPage() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [accountType, setAccountType] = useState<'admin' | 'customer'>('customer');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +17,7 @@ export function LoginPage() {
     setLoading(true);
 
     const result =
-      mode === 'signin' ? await signIn(email, password) : await signUp(email, password);
+      mode === 'signin' ? await signIn(email, password) : await signUp(email, password, accountType);
 
     setLoading(false);
 
@@ -128,11 +129,35 @@ export function LoginPage() {
           </h2>
           <p className="text-sm text-slate-500 mb-8">
             {mode === 'signin'
-              ? 'Sign in to access your POS dashboard.'
-              : 'Create your account. Takes 30 seconds.'}
+              ? 'Sign in to access ELECTRO-POS.'
+              : 'Choose your account type and get started.'}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {mode === 'signup' && (
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">
+                  Account type
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setAccountType('customer')}
+                    className={`py-2.5 rounded-lg border text-sm font-medium ${accountType === 'customer' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-300 text-slate-600'}`}
+                  >
+                    Customer
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAccountType('admin')}
+                    className={`py-2.5 rounded-lg border text-sm font-medium ${accountType === 'admin' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-300 text-slate-600'}`}
+                  >
+                    Admin / Staff
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">
                 Email
